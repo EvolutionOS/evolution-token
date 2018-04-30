@@ -16,17 +16,13 @@ contract EvoDistribution is Ownable {
   EvoToken public EVO;
 
   uint256 private constant decimalFactor = 10**uint256(18);
-  enum AllocationType { PRESALE, FOUNDER, AIRDROP, ADVISOR, RESERVE, BONUS1, BONUS2, BONUS3 }
+  enum AllocationType { PRESALE, FOUNDER, AIRDROP, ADVISOR }
   uint256 public constant INITIAL_SUPPLY   = 1000000000 * decimalFactor;
   uint256 public AVAILABLE_TOTAL_SUPPLY    = 1000000000 * decimalFactor;
-  uint256 public AVAILABLE_PRESALE_SUPPLY  =  230000000 * decimalFactor; // 100% Released at Token Distribution (TD)
+  uint256 public AVAILABLE_PRESALE_SUPPLY  =          1 * decimalFactor; // 100% Released at Token Distribution (TD)
   uint256 public AVAILABLE_FOUNDER_SUPPLY  =  150000000 * decimalFactor; // 33% Released at TD +1 year -> 100% at TD +3 years
-  uint256 public AVAILABLE_AIRDROP_SUPPLY  =   10000000 * decimalFactor; // 100% Released at TD
-  uint256 public AVAILABLE_ADVISOR_SUPPLY  =   20000000 * decimalFactor; // 100% Released at TD +7 months
-  uint256 public AVAILABLE_RESERVE_SUPPLY  =  513116658 * decimalFactor; // 6.8% Released at TD +100 days -> 100% at TD +4 years
-  uint256 public AVAILABLE_BONUS1_SUPPLY  =    39053330 * decimalFactor; // 100% Released at TD +1 year
-  uint256 public AVAILABLE_BONUS2_SUPPLY  =     9354408 * decimalFactor; // 100% Released at TD +2 years
-  uint256 public AVAILABLE_BONUS3_SUPPLY  =    28475604 * decimalFactor; // 100% Released at TD +3 years
+  uint256 public AVAILABLE_AIRDROP_SUPPLY  =    1000000 * decimalFactor; // 100% Released at TD
+  uint256 public AVAILABLE_ADVISOR_SUPPLY  =    1000000 * decimalFactor; // 100% Released at TD +7 months
 
   uint256 public grandTotalClaimed = 0;
   uint256 public startTime;
@@ -61,7 +57,7 @@ contract EvoDistribution is Ownable {
     */
   function EvoDistribution(uint256 _startTime) public {
     require(_startTime >= now);
-    require(AVAILABLE_TOTAL_SUPPLY == AVAILABLE_PRESALE_SUPPLY.add(AVAILABLE_FOUNDER_SUPPLY).add(AVAILABLE_AIRDROP_SUPPLY).add(AVAILABLE_ADVISOR_SUPPLY).add(AVAILABLE_BONUS1_SUPPLY).add(AVAILABLE_BONUS2_SUPPLY).add(AVAILABLE_BONUS3_SUPPLY).add(AVAILABLE_RESERVE_SUPPLY));
+    require(AVAILABLE_TOTAL_SUPPLY == AVAILABLE_PRESALE_SUPPLY.add(AVAILABLE_FOUNDER_SUPPLY).add(AVAILABLE_AIRDROP_SUPPLY).add(AVAILABLE_ADVISOR_SUPPLY));
     startTime = _startTime;
     EVO = new EvoToken(this);
   }
@@ -74,29 +70,17 @@ contract EvoDistribution is Ownable {
     */
   function setAllocation (address _recipient, uint256 _totalAllocated, AllocationType _supply) onlyOwner public {
     require(allocations[_recipient].totalAllocated == 0 && _totalAllocated > 0);
-    require(_supply >= AllocationType.PRESALE && _supply <= AllocationType.BONUS3);
+    require(_supply >= AllocationType.PRESALE && _supply <= AllocationType.ADVISOR);
     require(_recipient != address(0));
     if (_supply == AllocationType.PRESALE) {
       AVAILABLE_PRESALE_SUPPLY = AVAILABLE_PRESALE_SUPPLY.sub(_totalAllocated);
       allocations[_recipient] = Allocation(uint8(AllocationType.PRESALE), 0, 0, _totalAllocated, 0);
     } else if (_supply == AllocationType.FOUNDER) {
       AVAILABLE_FOUNDER_SUPPLY = AVAILABLE_FOUNDER_SUPPLY.sub(_totalAllocated);
-      allocations[_recipient] = Allocation(uint8(AllocationType.FOUNDER), startTime + 1 years, startTime + 3 years, _totalAllocated, 0);
+      allocations[_recipient] = Allocation(uint8(AllocationType.FOUNDER), startTime + 1 years, 0, _totalAllocated, 0);
     } else if (_supply == AllocationType.ADVISOR) {
       AVAILABLE_ADVISOR_SUPPLY = AVAILABLE_ADVISOR_SUPPLY.sub(_totalAllocated);
-      allocations[_recipient] = Allocation(uint8(AllocationType.ADVISOR), startTime + 209 days, 0, _totalAllocated, 0);
-    } else if (_supply == AllocationType.RESERVE) {
-      AVAILABLE_RESERVE_SUPPLY = AVAILABLE_RESERVE_SUPPLY.sub(_totalAllocated);
-      allocations[_recipient] = Allocation(uint8(AllocationType.RESERVE), startTime + 100 days, startTime + 4 years, _totalAllocated, 0);
-    } else if (_supply == AllocationType.BONUS1) {
-      AVAILABLE_BONUS1_SUPPLY = AVAILABLE_BONUS1_SUPPLY.sub(_totalAllocated);
-      allocations[_recipient] = Allocation(uint8(AllocationType.BONUS1), startTime + 1 years, startTime + 1 years, _totalAllocated, 0);
-    } else if (_supply == AllocationType.BONUS2) {
-      AVAILABLE_BONUS2_SUPPLY = AVAILABLE_BONUS2_SUPPLY.sub(_totalAllocated);
-      allocations[_recipient] = Allocation(uint8(AllocationType.BONUS2), startTime + 2 years, startTime + 2 years, _totalAllocated, 0);
-    } else if (_supply == AllocationType.BONUS3) {
-      AVAILABLE_BONUS3_SUPPLY = AVAILABLE_BONUS3_SUPPLY.sub(_totalAllocated);
-      allocations[_recipient] = Allocation(uint8(AllocationType.BONUS3), startTime + 3 years, startTime + 3 years, _totalAllocated, 0);
+      allocations[_recipient] = Allocation(uint8(AllocationType.ADVISOR), startTime + 1 years, 0, _totalAllocated, 0);
     }
     AVAILABLE_TOTAL_SUPPLY = AVAILABLE_TOTAL_SUPPLY.sub(_totalAllocated);
     LogNewAllocation(_recipient, _supply, _totalAllocated, grandTotalAllocated());
