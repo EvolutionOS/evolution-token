@@ -17,7 +17,7 @@ contract EvoToken is IERC20 {
   string public symbol = 'EVO';
   uint8 public constant decimals = 18;
   uint256 public constant decimalFactor = 10 ** uint256(decimals);
-  uint256 public constant totalSupply = 6000000000 * decimalFactor;
+  uint256 public constant totalSupply = 5000000000 * decimalFactor;
   mapping (address => uint256) balances;
   mapping (address => mapping (address => uint256)) internal allowed;
 
