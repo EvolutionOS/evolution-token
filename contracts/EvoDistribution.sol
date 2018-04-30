@@ -17,10 +17,10 @@ contract EvoDistribution is Ownable {
 
   uint256 private constant decimalFactor = 10**uint256(18);
   enum AllocationType { PRESALE, FOUNDER, AIRDROP, ADVISOR, RESERVE, BONUS1, BONUS2, BONUS3 }
-  uint256 public constant INITIAL_SUPPLY   = 5000000000 * decimalFactor;
-  uint256 public AVAILABLE_TOTAL_SUPPLY    = 5000000000 * decimalFactor;
+  uint256 public constant INITIAL_SUPPLY   = 1000000000 * decimalFactor;
+  uint256 public AVAILABLE_TOTAL_SUPPLY    = 1000000000 * decimalFactor;
   uint256 public AVAILABLE_PRESALE_SUPPLY  =  230000000 * decimalFactor; // 100% Released at Token Distribution (TD)
-  uint256 public AVAILABLE_FOUNDER_SUPPLY  = 2500000000 * decimalFactor; // 33% Released at TD +1 year -> 100% at TD +3 years
+  uint256 public AVAILABLE_FOUNDER_SUPPLY  =  150000000 * decimalFactor; // 33% Released at TD +1 year -> 100% at TD +3 years
   uint256 public AVAILABLE_AIRDROP_SUPPLY  =   10000000 * decimalFactor; // 100% Released at TD
   uint256 public AVAILABLE_ADVISOR_SUPPLY  =   20000000 * decimalFactor; // 100% Released at TD +7 months
   uint256 public AVAILABLE_RESERVE_SUPPLY  =  513116658 * decimalFactor; // 6.8% Released at TD +100 days -> 100% at TD +4 years
@@ -159,7 +159,7 @@ contract EvoDistribution is Ownable {
 
   // Allow transfer of accidentally sent ERC20 tokens
   function refundTokens(address _recipient, address _token) public onlyOwner {
-    require(_token != address(EVO));
+    require(_token != address(POLY));
     IERC20 token = IERC20(_token);
     uint256 balance = token.balanceOf(this);
     require(token.transfer(_recipient, balance));
