@@ -159,7 +159,7 @@ contract EvoDistribution is Ownable {
 
   // Allow transfer of accidentally sent ERC20 tokens
   function refundTokens(address _recipient, address _token) public onlyOwner {
-    require(_token != address(POLY));
+    require(_token != address(EVO));
     IERC20 token = IERC20(_token);
     uint256 balance = token.balanceOf(this);
     require(token.transfer(_recipient, balance));
