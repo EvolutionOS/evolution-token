@@ -17,11 +17,11 @@ contract EvoDistribution is Ownable {
 
   uint256 private constant decimalFactor = 10**uint256(18);
   enum AllocationType { AIRDROP }
-  uint256 public constant INITIAL_SUPPLY   = 5000000000 * decimalFactor;
-  uint256 public AVAILABLE_TOTAL_SUPPLY    = 5000000000 * decimalFactor;
+  uint256 public constant INITIAL_SUPPLY   = 6000000000 * decimalFactor;
+  uint256 public AVAILABLE_TOTAL_SUPPLY    = 6000000000 * decimalFactor;
   //uint256 public AVAILABLE_PRESALE_SUPPLY  =  230000000 * decimalFactor; // 100% Released at Token Distribution (TD)
   //uint256 public AVAILABLE_FOUNDER_SUPPLY  =  150000000 * decimalFactor; // 33% Released at TD +1 year -> 100% at TD +3 years
-  uint256 public AVAILABLE_AIRDROP_SUPPLY  =   2500000000 * decimalFactor; // 100% Released at TD
+  uint256 public AVAILABLE_AIRDROP_SUPPLY  = 2500000000 * decimalFactor; // 100% Released at TD
   //uint256 public AVAILABLE_ADVISOR_SUPPLY  =   20000000 * decimalFactor; // 100% Released at TD +7 months
   //uint256 public AVAILABLE_RESERVE_SUPPLY  =  513116658 * decimalFactor; // 6.8% Released at TD +100 days -> 100% at TD +4 years
   //uint256 public AVAILABLE_BONUS1_SUPPLY  =    39053330 * decimalFactor; // 100% Released at TD +1 year
@@ -133,18 +133,24 @@ contract EvoDistribution is Ownable {
     * @dev Transfer a recipients available allocation to their address
     * @param _recipient The address to withdraw tokens for
     */
-  function transferTokens (address _recipient) public {
+  /*function transferTokens (address _recipient) public {
     require(allocations[_recipient].amountClaimed < allocations[_recipient].totalAllocated);
-    //require(now >= allocations[_recipient].endCliff);
+    require(now >= allocations[_recipient].endCliff);
     require(now >= startTime);
     uint256 newAmountClaimed;
-    newAmountClaimed = allocations[_recipient].totalAllocated;
+    if (allocations[_recipient].endVesting > now) {
+      // Transfer available amount based on vesting schedule and allocation
+      newAmountClaimed = allocations[_recipient].totalAllocated.mul(now.sub(startTime)).div(allocations[_recipient].endVesting.sub(startTime));
+    } else {
+      // Transfer total allocated (minus previously claimed tokens)
+      newAmountClaimed = allocations[_recipient].totalAllocated;
+    }
     uint256 tokensToTransfer = newAmountClaimed.sub(allocations[_recipient].amountClaimed);
     allocations[_recipient].amountClaimed = newAmountClaimed;
     require(EVO.transfer(_recipient, tokensToTransfer));
     grandTotalClaimed = grandTotalClaimed.add(tokensToTransfer);
     LogEvoClaimed(_recipient, allocations[_recipient].AllocationSupply, tokensToTransfer, newAmountClaimed, grandTotalClaimed);
-  }
+  }*/
 
   // Returns the amount of Evo allocated
   function grandTotalAllocated() public view returns (uint256) {
