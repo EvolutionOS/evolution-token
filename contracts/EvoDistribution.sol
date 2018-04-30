@@ -17,11 +17,11 @@ contract EvoDistribution is Ownable {
 
   uint256 private constant decimalFactor = 10**uint256(18);
   enum AllocationType { PRESALE, FOUNDER, AIRDROP, ADVISOR, RESERVE, BONUS1, BONUS2, BONUS3 }
-  uint256 public constant INITIAL_SUPPLY   = 6000000000 * decimalFactor;
-  uint256 public AVAILABLE_TOTAL_SUPPLY    = 6000000000 * decimalFactor;
+  uint256 public constant INITIAL_SUPPLY   = 1000000000 * decimalFactor;
+  uint256 public AVAILABLE_TOTAL_SUPPLY    = 1000000000 * decimalFactor;
   uint256 public AVAILABLE_PRESALE_SUPPLY  =  230000000 * decimalFactor; // 100% Released at Token Distribution (TD)
   uint256 public AVAILABLE_FOUNDER_SUPPLY  =  150000000 * decimalFactor; // 33% Released at TD +1 year -> 100% at TD +3 years
-  uint256 public AVAILABLE_AIRDROP_SUPPLY  = 2500000000 * decimalFactor; // 100% Released at TD
+  uint256 public AVAILABLE_AIRDROP_SUPPLY  =   10000000 * decimalFactor; // 100% Released at TD
   uint256 public AVAILABLE_ADVISOR_SUPPLY  =   20000000 * decimalFactor; // 100% Released at TD +7 months
   uint256 public AVAILABLE_RESERVE_SUPPLY  =  513116658 * decimalFactor; // 6.8% Released at TD +100 days -> 100% at TD +4 years
   uint256 public AVAILABLE_BONUS1_SUPPLY  =    39053330 * decimalFactor; // 100% Released at TD +1 year
@@ -44,7 +44,7 @@ contract EvoDistribution is Ownable {
   // List of admins
   mapping (address => bool) public airdropAdmins;
 
-  // Keeps track of whether or not a 250 Evo airdrop has been made to a particular address
+  // Keeps track of whether or not a 250 EVO airdrop has been made to a particular address
   mapping (address => bool) public airdrops;
 
   modifier onlyOwnerOrAdmin() {
@@ -69,8 +69,8 @@ contract EvoDistribution is Ownable {
   /**
     * @dev Allow the owner of the contract to assign a new allocation
     * @param _recipient The recipient of the allocation
-    * @param _totalAllocated The total amount of Evo available to the receipient (after vesting)
-    * @param _supply The Evo supply the allocation will be taken from
+    * @param _totalAllocated The total amount of EVO available to the receipient (after vesting)
+    * @param _supply The EVO supply the allocation will be taken from
     */
   function setAllocation (address _recipient, uint256 _totalAllocated, AllocationType _supply) onlyOwner public {
     require(allocations[_recipient].totalAllocated == 0 && _totalAllocated > 0);
@@ -152,7 +152,7 @@ contract EvoDistribution is Ownable {
     LogEvoClaimed(_recipient, allocations[_recipient].AllocationSupply, tokensToTransfer, newAmountClaimed, grandTotalClaimed);
   }
 
-  // Returns the amount of Evo allocated
+  // Returns the amount of EVO allocated
   function grandTotalAllocated() public view returns (uint256) {
     return INITIAL_SUPPLY - AVAILABLE_TOTAL_SUPPLY;
   }
