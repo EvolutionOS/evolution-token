@@ -17,10 +17,10 @@ contract EvoDistribution is Ownable {
 
   uint256 private constant decimalFactor = 10**uint256(18);
   enum AllocationType { PRESALE, FOUNDER, AIRDROP, ADVISOR }
-  uint256 public constant INITIAL_SUPPLY   = 1000000000 * decimalFactor;
-  uint256 public AVAILABLE_TOTAL_SUPPLY    = 1000000000 * decimalFactor;
+  uint256 public constant INITIAL_SUPPLY   = 5000000000 * decimalFactor;
+  uint256 public AVAILABLE_TOTAL_SUPPLY    = 5000000000 * decimalFactor;
   uint256 public AVAILABLE_PRESALE_SUPPLY  =          1 * decimalFactor; // 100% Released at Token Distribution (TD)
-  uint256 public AVAILABLE_FOUNDER_SUPPLY  =  150000000 * decimalFactor; // 33% Released at TD +1 year -> 100% at TD +3 years
+  uint256 public AVAILABLE_FOUNDER_SUPPLY  = 2500000000 * decimalFactor; // 33% Released at TD +1 year -> 100% at TD +3 years
   uint256 public AVAILABLE_AIRDROP_SUPPLY  =    1000000 * decimalFactor; // 100% Released at TD
   uint256 public AVAILABLE_ADVISOR_SUPPLY  =    1000000 * decimalFactor; // 100% Released at TD +7 months
 
