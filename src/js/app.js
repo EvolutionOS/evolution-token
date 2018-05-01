@@ -43,26 +43,26 @@ App = {
   },
 
   initContract: function() {
-    $.getJSON("PolyDistribution.json", function(data) {
+    $.getJSON("EvoDistribution.json", function(data) {
       // console.log("data", data);
       // Get the necessary contract artifact file and instantiate it with truffle-contract.
-      var PolyDistributionArtifact = data;
-      App.contracts.PolyDistribution = TruffleContract(
-        PolyDistributionArtifact
+      var EvoDistributionArtifact = data;
+      App.contracts.EvoDistribution = TruffleContract(
+        EvoDistributionArtifact
       );
 
       // Set the provider for our contract.
-      App.contracts.PolyDistribution.setProvider(App.web3Provider);
+      App.contracts.EvoDistribution.setProvider(App.web3Provider);
 
       if (http_provider == "https://ropsten.infura.io/" + INFURA_APIKEY) {
-        appInstance = App.contracts.PolyDistribution.at(ropsten_address);
+        appInstance = App.contracts.EvoDistribution.at(ropsten_address);
         // console.log("aaabbbb", appInstance);
 
         // appInstance.INITIAL_SUPPLY().then(function(result) {
         //   console.log("????", result);
         // });
       } else {
-        appInstance = App.contracts.PolyDistribution.deployed();
+        appInstance = App.contracts.EvoDistribution.deployed();
         // console.log("aaabbbbb2222");
       }
       // return;
@@ -79,38 +79,38 @@ App = {
     return App.bindEvents();
   },
 
-  initPOLYContract: function(contract_address) {
-    console.log("initiate Poly token");
-    $.getJSON("PolyToken.json", function(data) {
+  initEVOContract: function(contract_address) {
+    console.log("initiate Evo token");
+    $.getJSON("EvoToken.json", function(data) {
       // Get the necessary contract artifact file and instantiate it with truffle-contract.
-      var PolyTokenArtifact = data;
+      var EvoTokenArtifact = data;
       // console.log(data);
-      App.contracts.PolyToken = TruffleContract(PolyTokenArtifact);
+      App.contracts.EvoToken = TruffleContract(EvoTokenArtifact);
 
       // Set the provider for our contract.
-      App.contracts.PolyToken.setProvider(App.web3Provider);
+      App.contracts.EvoToken.setProvider(App.web3Provider);
 
       var appInstance2;
-      var polyTokenInstance;
+      var evoTokenInstance;
 
       if (http_provider == "https://ropsten.infura.io/" + INFURA_APIKEY) {
-        appInstance2 = App.contracts.PolyToken.at(contract_address);
+        appInstance2 = App.contracts.EvoToken.at(contract_address);
         // console.log("aaabbbb", appInstance);
 
         // appInstance.INITIAL_SUPPLY().then(function(result) {
         //   console.log("????", result);
         // });
       } else {
-        appInstance2 = App.contracts.PolyToken.deployed();
+        appInstance2 = App.contracts.EvoToken.deployed();
       }
       console.log(appInstance2);
       // return;
 
       // appInstance2.then(function(instance) {
-      //   polyTokenInstance = instance;
+      //   evoTokenInstance = instance;
       //   console.log(instance);
 
-      //   polyTokenInstance.totalSupply().then(function(result) {
+      //   evoTokenInstance.totalSupply().then(function(result) {
       //     console.log(result);
       //   });
       // });
@@ -143,13 +143,13 @@ App = {
       console.log("Start allocation to " + _recipient);
 
       appInstance.then(function(instance) {
-        polyDistributionInstance = instance;
+        evoDistributionInstance = instance;
         console.log(instance);
 
         var _totalAllocated = 10000000 * 10 ** 18;
         var _supply = 0; //presale supply
 
-        polyDistributionInstance
+        evoDistributionInstance
           .setAllocation(_recipient, _totalAllocated, _supply)
           .then(function(result) {
             console.log(result);
@@ -165,10 +165,10 @@ App = {
       console.log("Send transaction to " + _recipient);
 
       appInstance.then(function(instance) {
-        polyDistributionInstance = instance;
+        evoDistributionInstance = instance;
         console.log(instance);
 
-        polyDistributionInstance
+        evoDistributionInstance
           .transferTokens(_recipient)
           .then(function(result) {
             console.log(result);
@@ -183,7 +183,7 @@ App = {
   getBalances: function() {
     console.log("Getting contract instance....");
 
-    var polyDistributionInstance;
+    var evoDistributionInstance;
 
     function calculatePercentage(result, allocation_supply) {
       var available_supply = web3.fromWei(result, "ether").toNumber();
@@ -208,7 +208,7 @@ App = {
       appInstance
         .then(function(instance) {
           console.log("aaaaaaa");
-          polyDistributionInstance = instance;
+          evoDistributionInstance = instance;
 
           console.log(instance);
 
@@ -225,28 +225,28 @@ App = {
 
           // allocated_percent = 50;
 
-          // console.log(polyDistributionInstance.INITIAL_SUPPLY().call());
+          // console.log(evoDistributionInstance.INITIAL_SUPPLY().call());
 
-          polyDistributionInstance.POLY().then(function(result) {
+          evoDistributionInstance.EVO().then(function(result) {
             console.log(result);
 
-            var polyTokenInstance = result;
+            var evoTokenInstance = result;
 
-            App.initPOLYContract(result);
+            App.initEVOContract(result);
 
-            // appInstance = App.contracts.PolyDistribution.at(result);
+            // appInstance = App.contracts.EvoDistribution.at(result);
 
             // console.log(appInstance);
           });
 
-          polyDistributionInstance.INITIAL_SUPPLY().then(function(result) {
+          evoDistributionInstance.INITIAL_SUPPLY().then(function(result) {
             console.log("#TotalSupply_Balance", result);
 
             $("#TotalSupply_Balance").text(result.toNumber());
 
             total_supply = result.toNumber();
 
-            polyDistributionInstance
+            evoDistributionInstance
               .AVAILABLE_TOTAL_SUPPLY()
               .then(function(result) {
                 console.log("#AvailableSupply_Balance", result.toNumber());
@@ -266,7 +266,7 @@ App = {
             // total_supply = 100000;
             // $("#TTBalance").text(result.c[0]);
 
-            polyDistributionInstance
+            evoDistributionInstance
               .grandTotalAllocated()
               .then(function(result) {
                 console.log("Grand Total Allocated", result.toNumber());
@@ -293,7 +293,7 @@ App = {
                 // $("#TTBalance").text(result.c[0]);
               });
 
-            polyDistributionInstance.grandTotalClaimed().then(function(result) {
+            evoDistributionInstance.grandTotalClaimed().then(function(result) {
               console.log("Grand Total Claimed", result.toNumber());
 
               sum_claimed = result.toNumber();
@@ -320,7 +320,7 @@ App = {
             });
           });
 
-          polyDistributionInstance
+          evoDistributionInstance
             .AVAILABLE_PRESALE_SUPPLY()
             .then(function(result) {
               console.log(
@@ -342,7 +342,7 @@ App = {
               );
             });
 
-          polyDistributionInstance
+          evoDistributionInstance
             .AVAILABLE_FOUNDER_SUPPLY()
             .then(function(result) {
               console.log(
@@ -367,7 +367,7 @@ App = {
               );
             });
 
-          polyDistributionInstance
+          evoDistributionInstance
             .AVAILABLE_RESERVE_SUPPLY()
             .then(function(result) {
               console.log(
@@ -391,7 +391,7 @@ App = {
               );
             });
 
-          polyDistributionInstance
+          evoDistributionInstance
             .AVAILABLE_ADVISOR_SUPPLY()
             .then(function(result) {
               console.log(
@@ -416,7 +416,7 @@ App = {
               );
             });
 
-          polyDistributionInstance
+          evoDistributionInstance
             .AVAILABLE_AIRDROP_SUPPLY()
             .then(function(result) {
               console.log(
@@ -441,7 +441,7 @@ App = {
               );
             });
 
-          polyDistributionInstance
+          evoDistributionInstance
             .AVAILABLE_BONUS1_SUPPLY()
             .then(function(result) {
               console.log(
@@ -459,7 +459,7 @@ App = {
               );
             });
 
-          polyDistributionInstance
+          evoDistributionInstance
             .AVAILABLE_BONUS2_SUPPLY()
             .then(function(result) {
               console.log(
@@ -477,7 +477,7 @@ App = {
               );
             });
 
-          polyDistributionInstance
+          evoDistributionInstance
             .AVAILABLE_BONUS3_SUPPLY()
             .then(function(result) {
               console.log(
