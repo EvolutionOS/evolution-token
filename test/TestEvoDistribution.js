@@ -1,5 +1,5 @@
-const PolyDistribution = artifacts.require("./PolyDistribution.sol");
-const PolyToken = artifacts.require("./PolyToken.sol");
+const EvoDistribution = artifacts.require("./EvoDistribution.sol");
+const EvoToken = artifacts.require("./EvoToken.sol");
 const Web3 = require('web3')
 
 var BigNumber = require('bignumber.js')
@@ -47,11 +47,11 @@ const logError = function (err) {
   console.log("-----------------------------------------");
 }
 
-contract('PolyDistribution', function(accounts) {
+contract('EvoDistribution', function(accounts) {
 
-  let polyDistribution;
-  let polyToken;
-  let polyTokenAddress;
+  let evoDistribution;
+  let evoToken;
+  let evoTokenAddress;
   let timeOffset = 3600 * 24 * 30; // Starts in 30 days
   let _startTime = Math.floor(new Date().getTime() /1000 + timeOffset); // Starts 10 min from now
 
@@ -105,7 +105,7 @@ contract('PolyDistribution', function(accounts) {
     console.log("Vesting End:", _allocation[2].toString(10));
     console.log("Tokens Allocated:", _allocation[3].toString(10));
     console.log("Tokens Claimed :", _allocation[4].toString(10));
-    console.log("POLY token balance :", _new_presale_tokenBalance.toString(10));
+    console.log("EVO token balance :", _new_presale_tokenBalance.toString(10));
     console.log("\n");
   }
 
@@ -127,39 +127,39 @@ contract('PolyDistribution', function(accounts) {
 
       switch (_allocationType) {
         case "PRESALE":
-            oldPresaleSupply = await polyDistribution.AVAILABLE_PRESALE_SUPPLY({from:account_owner});
+            oldPresaleSupply = await evoDistribution.AVAILABLE_PRESALE_SUPPLY({from:account_owner});
             allocationTypeNum = 0;
           break;
         case "FOUNDER":
-            oldPresaleSupply = await polyDistribution.AVAILABLE_FOUNDER_SUPPLY({from:account_owner});
+            oldPresaleSupply = await evoDistribution.AVAILABLE_FOUNDER_SUPPLY({from:account_owner});
             allocationTypeNum = 1;
           break;
         case "ADVISOR":
-            oldPresaleSupply = await polyDistribution.AVAILABLE_ADVISOR_SUPPLY({from:account_owner});
+            oldPresaleSupply = await evoDistribution.AVAILABLE_ADVISOR_SUPPLY({from:account_owner});
             allocationTypeNum = 3;
           break;
         case "RESERVE":
-            oldPresaleSupply = await polyDistribution.AVAILABLE_RESERVE_SUPPLY({from:account_owner});
+            oldPresaleSupply = await evoDistribution.AVAILABLE_RESERVE_SUPPLY({from:account_owner});
             allocationTypeNum = 4;
           break;
         case "BONUS1":
-            oldPresaleSupply = await polyDistribution.AVAILABLE_BONUS1_SUPPLY({from:account_owner});
+            oldPresaleSupply = await evoDistribution.AVAILABLE_BONUS1_SUPPLY({from:account_owner});
             allocationTypeNum = 5;
           break;
         case "BONUS2":
-            oldPresaleSupply = await polyDistribution.AVAILABLE_BONUS2_SUPPLY({from:account_owner});
+            oldPresaleSupply = await evoDistribution.AVAILABLE_BONUS2_SUPPLY({from:account_owner});
             allocationTypeNum = 6;
           break;
         case "BONUS3":
-            oldPresaleSupply = await polyDistribution.AVAILABLE_BONUS3_SUPPLY({from:account_owner});
+            oldPresaleSupply = await evoDistribution.AVAILABLE_BONUS3_SUPPLY({from:account_owner});
             allocationTypeNum = 7;
           break;
         default:
 
       }
 
-      await polyDistribution.setAllocation(accountToUse,tokenAllocation,allocationTypeNum,{from:account_owner});
-      let allocation = await polyDistribution.allocations(accountToUse,{from:account_owner});
+      await evoDistribution.setAllocation(accountToUse,tokenAllocation,allocationTypeNum,{from:account_owner});
+      let allocation = await evoDistribution.allocations(accountToUse,{from:account_owner});
       setAllocationStruct(allocation);
 
       // Allocation must be equal to the passed tokenAllocation
@@ -172,25 +172,25 @@ contract('PolyDistribution', function(accounts) {
 
       switch (_allocationType) {
         case "PRESALE":
-          newPresaleSupply = await polyDistribution.AVAILABLE_PRESALE_SUPPLY({from:account_owner});
+          newPresaleSupply = await evoDistribution.AVAILABLE_PRESALE_SUPPLY({from:account_owner});
           break;
         case "FOUNDER":
-          newPresaleSupply = await polyDistribution.AVAILABLE_FOUNDER_SUPPLY({from:account_owner});
+          newPresaleSupply = await evoDistribution.AVAILABLE_FOUNDER_SUPPLY({from:account_owner});
           break;
         case "ADVISOR":
-          newPresaleSupply = await polyDistribution.AVAILABLE_ADVISOR_SUPPLY({from:account_owner});
+          newPresaleSupply = await evoDistribution.AVAILABLE_ADVISOR_SUPPLY({from:account_owner});
           break;
         case "RESERVE":
-          newPresaleSupply = await polyDistribution.AVAILABLE_RESERVE_SUPPLY({from:account_owner});
+          newPresaleSupply = await evoDistribution.AVAILABLE_RESERVE_SUPPLY({from:account_owner});
           break;
         case "BONUS1":
-          newPresaleSupply = await polyDistribution.AVAILABLE_BONUS1_SUPPLY({from:account_owner});
+          newPresaleSupply = await evoDistribution.AVAILABLE_BONUS1_SUPPLY({from:account_owner});
           break;
         case "BONUS2":
-          newPresaleSupply = await polyDistribution.AVAILABLE_BONUS2_SUPPLY({from:account_owner});
+          newPresaleSupply = await evoDistribution.AVAILABLE_BONUS2_SUPPLY({from:account_owner});
           break;
         case "BONUS3":
-          newPresaleSupply = await polyDistribution.AVAILABLE_BONUS3_SUPPLY({from:account_owner});
+          newPresaleSupply = await evoDistribution.AVAILABLE_BONUS3_SUPPLY({from:account_owner});
           break;
         default:
 
@@ -203,20 +203,20 @@ contract('PolyDistribution', function(accounts) {
   };
 
   before(async() => {
-        polyDistribution = await PolyDistribution.new(_startTime,{from:accounts[0]});
-        polyTokenAddress = await polyDistribution.POLY({from:accounts[0]});
-        polyToken = await PolyToken.at(polyTokenAddress);
+        evoDistribution = await EvoDistribution.new(_startTime,{from:accounts[0]});
+        evoTokenAddress = await evoDistribution.EVO({from:accounts[0]});
+        evoToken = await EvoToken.at(evoTokenAddress);
 
-        contractStartTime = await polyDistribution.startTime({from:accounts[0]});
+        contractStartTime = await evoDistribution.startTime({from:accounts[0]});
     });
 
   describe("All tests", async function () {
 
     describe("Test Constructor", async function () {
 
-      it("should have deployed PolyToken", async function () {
-        logTitle("PolyToken Address: "+ polyTokenAddress);
-        assert.notEqual(polyTokenAddress.valueOf(), "0x0000000000000000000000000000000000000000", "Token was not initialized");
+      it("should have deployed EvoToken", async function () {
+        logTitle("EvoToken Address: "+ evoTokenAddress);
+        assert.notEqual(evoTokenAddress.valueOf(), "0x0000000000000000000000000000000000000000", "Token was not initialized");
       });
 
     });
@@ -232,7 +232,7 @@ contract('PolyDistribution', function(accounts) {
       let tokensAllocated;
 
       before(async() => {
-        oldTotalSupply = await polyDistribution.AVAILABLE_TOTAL_SUPPLY({from:account_owner});
+        oldTotalSupply = await evoDistribution.AVAILABLE_TOTAL_SUPPLY({from:account_owner});
       });
 
       describe("PRESALE Allocation", async function () {
@@ -322,14 +322,14 @@ contract('PolyDistribution', function(accounts) {
 
         it("New total supply should match allocations previously made", async function () {
 
-          let newTotalSupply = await polyDistribution.AVAILABLE_TOTAL_SUPPLY({from:account_owner});
+          let newTotalSupply = await evoDistribution.AVAILABLE_TOTAL_SUPPLY({from:account_owner});
           assert.equal(oldTotalSupply.toString(10),newTotalSupply.toString(10));
 
         });
 
         it("Grand total should match allocations previously made", async function () {
 
-          let grandTotalAllocated = await polyDistribution.grandTotalAllocated({from:account_owner});
+          let grandTotalAllocated = await evoDistribution.grandTotalAllocated({from:account_owner});
           assert.equal(grantTotalAllocationSum.toString(10),grandTotalAllocated.toString(10));
 
         });
@@ -339,7 +339,7 @@ contract('PolyDistribution', function(accounts) {
 
         it("should reject invalid _supply codes", async function () {
           try {
-            await polyDistribution.setAllocation(account_advisor1,1000,8,{from:account_owner});
+            await evoDistribution.setAllocation(account_advisor1,1000,8,{from:account_owner});
           } catch (error) {
               logError("✅   Rejected invalid _supply code");
               return true;
@@ -349,7 +349,7 @@ contract('PolyDistribution', function(accounts) {
 
         it("should reject invalid address", async function () {
           try {
-            await polyDistribution.setAllocation(0,1000,0,{from:account_owner});
+            await evoDistribution.setAllocation(0,1000,0,{from:account_owner});
           } catch (error) {
               logError("✅   Rejected invalid address");
               return true;
@@ -359,7 +359,7 @@ contract('PolyDistribution', function(accounts) {
 
         it("should reject invalid allocation", async function () {
           try {
-            await polyDistribution.setAllocation(account_advisor1,0,0,{from:account_owner});
+            await evoDistribution.setAllocation(account_advisor1,0,0,{from:account_owner});
           } catch (error) {
               logError("✅   Rejected invalid allocation ");
               return true;
@@ -369,7 +369,7 @@ contract('PolyDistribution', function(accounts) {
 
         it("should reject repeated allocations", async function () {
           try {
-            await polyDistribution.setAllocation(account_presale,1000,0,{from:account_owner});
+            await evoDistribution.setAllocation(account_presale,1000,0,{from:account_owner});
           } catch (error) {
               logError("✅   Rejected repeated allocations ");
               return true;
@@ -399,12 +399,12 @@ contract('PolyDistribution', function(accounts) {
           let currentBlock = await web3.eth.getBlock("latest");
 
           // Check token balance for account before calling transferTokens, then check afterwards.
-          let tokenBalance = await polyToken.balanceOf(account_presale,{from:accounts[0]});
-          await polyDistribution.transferTokens(account_presale,{from:accounts[0]});
-          let new_tokenBalance = await polyToken.balanceOf(account_presale,{from:accounts[0]});
+          let tokenBalance = await evoToken.balanceOf(account_presale,{from:accounts[0]});
+          await evoDistribution.transferTokens(account_presale,{from:accounts[0]});
+          let new_tokenBalance = await evoToken.balanceOf(account_presale,{from:accounts[0]});
 
           //PRESALE tokens are completely distributed once allocated as they have no vesting period nor cliff
-          let allocation = await polyDistribution.allocations(account_presale,{from:account_owner});
+          let allocation = await evoDistribution.allocations(account_presale,{from:account_owner});
 
           logWithdrawalData("PRESALE",currentBlock.timestamp,account_presale,contractStartTime,allocation,new_tokenBalance);
 
@@ -415,12 +415,12 @@ contract('PolyDistribution', function(accounts) {
         it("should fail to withdraw FOUNDER tokens as cliff period not reached", async function () {
 
           try {
-            await polyDistribution.transferTokens(account_founder1,{from:accounts[0]});
+            await evoDistribution.transferTokens(account_founder1,{from:accounts[0]});
           } catch (error) {
               let currentBlock = await web3.eth.getBlock("latest");
 
-              let new_tokenBalance = await polyToken.balanceOf(account_founder1,{from:accounts[0]});
-              let allocation = await polyDistribution.allocations(account_founder1,{from:account_owner});
+              let new_tokenBalance = await evoToken.balanceOf(account_founder1,{from:accounts[0]});
+              let allocation = await evoDistribution.allocations(account_founder1,{from:account_owner});
               logWithdrawalData("FOUNDER",currentBlock.timestamp,account_founder1,contractStartTime,allocation,new_tokenBalance);
 
               logError("✅   Failed to withdraw");
@@ -433,12 +433,12 @@ contract('PolyDistribution', function(accounts) {
         it("should fail to withdraw ADVISOR tokens as cliff period not reached", async function () {
 
           try {
-            await polyDistribution.transferTokens(account_advisor1,{from:accounts[0]});
+            await evoDistribution.transferTokens(account_advisor1,{from:accounts[0]});
           } catch (error) {
               let currentBlock = await web3.eth.getBlock("latest");
 
-              let new_tokenBalance = await polyToken.balanceOf(account_advisor1,{from:accounts[0]});
-              let allocation = await polyDistribution.allocations(account_advisor1,{from:account_owner});
+              let new_tokenBalance = await evoToken.balanceOf(account_advisor1,{from:accounts[0]});
+              let allocation = await evoDistribution.allocations(account_advisor1,{from:account_owner});
               logWithdrawalData("ADVISOR",currentBlock.timestamp,account_advisor1,contractStartTime,allocation,new_tokenBalance);
 
               logError("✅   Failed to withdraw");
@@ -451,12 +451,12 @@ contract('PolyDistribution', function(accounts) {
         it("should fail to withdraw RESERVE tokens as cliff period not reached", async function () {
 
           try {
-            await polyDistribution.transferTokens(account_reserve,{from:accounts[0]});
+            await evoDistribution.transferTokens(account_reserve,{from:accounts[0]});
           } catch (error) {
               let currentBlock = await web3.eth.getBlock("latest");
 
-              let new_tokenBalance = await polyToken.balanceOf(account_reserve,{from:accounts[0]});
-              let allocation = await polyDistribution.allocations(account_reserve,{from:account_owner});
+              let new_tokenBalance = await evoToken.balanceOf(account_reserve,{from:accounts[0]});
+              let allocation = await evoDistribution.allocations(account_reserve,{from:account_owner});
               logWithdrawalData("RESERVE",currentBlock.timestamp,account_reserve,contractStartTime,allocation,new_tokenBalance);
 
               logError("✅   Failed to withdraw");
@@ -467,31 +467,31 @@ contract('PolyDistribution', function(accounts) {
         });
 
         it("should perform the AIRDROP for 50 accounts", async function () {
-          await polyDistribution.airdropTokens(airdrop_massive,{from:accounts[0]});
+          await evoDistribution.airdropTokens(airdrop_massive,{from:accounts[0]});
 
         });
 
-        it("airdrop accounts should have 250 POLY each", async function () {
+        it("airdrop accounts should have 1000 EVO each", async function () {
           for (var i = 0; i< airdrop_massive.length; i++){
-            let tokenBalance = await polyToken.balanceOf(airdrop_massive[i],{from:accounts[0]});
+            let tokenBalance = await evoToken.balanceOf(airdrop_massive[i],{from:accounts[0]});
             assert.equal(tokenBalance.toString(10), "250000000000000000000");
 
           }
         });
 
         it("should set another admin for airdrop", async function () {
-          await polyDistribution.setAirdropAdmin(account_admin1,true,{from:accounts[0]});
+          await evoDistribution.setAirdropAdmin(account_admin1,true,{from:accounts[0]});
 
         });
 
         it("should perform the AIRDROP for 50 accounts with an admin", async function () {
-          await polyDistribution.airdropTokens(airdrop_massive2,{from:account_admin1});
+          await evoDistribution.airdropTokens(airdrop_massive2,{from:account_admin1});
 
         });
 
-        it("airdrop accounts should have 250 POLY each", async function () {
+        it("airdrop accounts should have 1000 EVO each", async function () {
           for (var i = 0; i< airdrop_massive2.length; i++){
-            let tokenBalance = await polyToken.balanceOf(airdrop_massive2[i],{from:accounts[0]});
+            let tokenBalance = await evoToken.balanceOf(airdrop_massive2[i],{from:accounts[0]});
             assert.equal(tokenBalance.toString(10), "250000000000000000000");
 
           }
@@ -513,12 +513,12 @@ contract('PolyDistribution', function(accounts) {
           let currentBlock = await web3.eth.getBlock("latest");
 
           // Check token balance for account before calling transferTokens, then check afterwards.
-          let tokenBalance = await polyToken.balanceOf(account_reserve,{from:accounts[0]});
-          await polyDistribution.transferTokens(account_reserve,{from:accounts[0]});
-          let new_tokenBalance = await polyToken.balanceOf(account_reserve,{from:accounts[0]});
+          let tokenBalance = await evoToken.balanceOf(account_reserve,{from:accounts[0]});
+          await evoDistribution.transferTokens(account_reserve,{from:accounts[0]});
+          let new_tokenBalance = await evoToken.balanceOf(account_reserve,{from:accounts[0]});
 
           //PRESALE tokens are completely distributed once allocated as they have no vesting period nor cliff
-          let allocation = await polyDistribution.allocations(account_reserve,{from:account_owner});
+          let allocation = await evoDistribution.allocations(account_reserve,{from:account_owner});
 
           logWithdrawalData("RESERVE",currentBlock.timestamp,account_reserve,contractStartTime,allocation,new_tokenBalance);
 
@@ -543,12 +543,12 @@ contract('PolyDistribution', function(accounts) {
           let currentBlock = await web3.eth.getBlock("latest");
 
           // Check token balance for account before calling transferTokens, then check afterwards.
-          let tokenBalance = await polyToken.balanceOf(account_founder1,{from:accounts[0]});
-          await polyDistribution.transferTokens(account_founder1,{from:accounts[0]});
-          let new_tokenBalance = await polyToken.balanceOf(account_founder1,{from:accounts[0]});
+          let tokenBalance = await evoToken.balanceOf(account_founder1,{from:accounts[0]});
+          await evoDistribution.transferTokens(account_founder1,{from:accounts[0]});
+          let new_tokenBalance = await evoToken.balanceOf(account_founder1,{from:accounts[0]});
 
           //PRESALE tokens are completely distributed once allocated as they have no vesting period nor cliff
-          let allocation = await polyDistribution.allocations(account_founder1,{from:account_owner});
+          let allocation = await evoDistribution.allocations(account_founder1,{from:account_owner});
 
           logWithdrawalData("FOUNDER",currentBlock.timestamp,account_founder1,contractStartTime,allocation,new_tokenBalance);
 
@@ -560,12 +560,12 @@ contract('PolyDistribution', function(accounts) {
           let currentBlock = await web3.eth.getBlock("latest");
 
           // Check token balance for account before calling transferTokens, then check afterwards.
-          let tokenBalance = await polyToken.balanceOf(account_bonus1,{from:accounts[0]});
-          await polyDistribution.transferTokens(account_bonus1,{from:accounts[0]});
-          let new_tokenBalance = await polyToken.balanceOf(account_bonus1,{from:accounts[0]});
+          let tokenBalance = await evoToken.balanceOf(account_bonus1,{from:accounts[0]});
+          await evoDistribution.transferTokens(account_bonus1,{from:accounts[0]});
+          let new_tokenBalance = await evoToken.balanceOf(account_bonus1,{from:accounts[0]});
 
           //PRESALE tokens are completely distributed once allocated as they have no vesting period nor cliff
-          let allocation = await polyDistribution.allocations(account_bonus1,{from:account_owner});
+          let allocation = await evoDistribution.allocations(account_bonus1,{from:account_owner});
 
           logWithdrawalData("BONUS1",currentBlock.timestamp,account_bonus1,contractStartTime,allocation,new_tokenBalance);
 
@@ -577,12 +577,12 @@ contract('PolyDistribution', function(accounts) {
           let currentBlock = await web3.eth.getBlock("latest");
 
           // Check token balance for account before calling transferTokens, then check afterwards.
-          let tokenBalance = await polyToken.balanceOf(account_reserve,{from:accounts[0]});
-          await polyDistribution.transferTokens(account_reserve,{from:accounts[0]});
-          let new_tokenBalance = await polyToken.balanceOf(account_reserve,{from:accounts[0]});
+          let tokenBalance = await evoToken.balanceOf(account_reserve,{from:accounts[0]});
+          await evoDistribution.transferTokens(account_reserve,{from:accounts[0]});
+          let new_tokenBalance = await evoToken.balanceOf(account_reserve,{from:accounts[0]});
 
           //PRESALE tokens are completely distributed once allocated as they have no vesting period nor cliff
-          let allocation = await polyDistribution.allocations(account_reserve,{from:account_owner});
+          let allocation = await evoDistribution.allocations(account_reserve,{from:account_owner});
 
           logWithdrawalData("RESERVE",currentBlock.timestamp,account_reserve,contractStartTime,allocation,new_tokenBalance);
 
@@ -594,12 +594,12 @@ contract('PolyDistribution', function(accounts) {
           let currentBlock = await web3.eth.getBlock("latest");
 
           // Check token balance for account before calling transferTokens, then check afterwards.
-          let tokenBalance = await polyToken.balanceOf(account_advisor1,{from:accounts[0]});
-          await polyDistribution.transferTokens(account_advisor1,{from:accounts[0]});
-          let new_tokenBalance = await polyToken.balanceOf(account_advisor1,{from:accounts[0]});
+          let tokenBalance = await evoToken.balanceOf(account_advisor1,{from:accounts[0]});
+          await evoDistribution.transferTokens(account_advisor1,{from:accounts[0]});
+          let new_tokenBalance = await evoToken.balanceOf(account_advisor1,{from:accounts[0]});
 
           //PRESALE tokens are completely distributed once allocated as they have no vesting period nor cliff
-          let allocation = await polyDistribution.allocations(account_advisor1,{from:account_owner});
+          let allocation = await evoDistribution.allocations(account_advisor1,{from:account_owner});
 
           logWithdrawalData("ADVISOR",currentBlock.timestamp,account_advisor1,contractStartTime,allocation,new_tokenBalance);
 
@@ -619,7 +619,7 @@ contract('PolyDistribution', function(accounts) {
 
       it("should reject transfers", async function () {
         try {
-          await polyDistribution.sendTransaction({from:accounts[0], value:web3.utils.toWei("1","ether")});
+          await evoDistribution.sendTransaction({from:accounts[0], value:web3.utils.toWei("1","ether")});
         } catch (error) {
             logError("✅   Rejected incoming ether");
             return true;
