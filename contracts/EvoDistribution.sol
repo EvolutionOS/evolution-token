@@ -35,7 +35,7 @@ contract EvoDistribution is Ownable {
   // List of admins
   mapping (address => bool) public airdropAdmins;
 
-  // Keeps track of whether or not a 250 EVO airdrop has been made to a particular address
+  // Keeps track of whether or not a 1000 EVO airdrop has been made to a particular address
   mapping (address => bool) public airdrops;
 
   modifier onlyOwnerOrAdmin() {
