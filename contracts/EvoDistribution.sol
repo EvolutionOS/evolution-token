@@ -88,8 +88,8 @@ contract EvoDistribution is Ownable {
     {
         if (!airdrops[_recipient[i]]) {
           airdrops[_recipient[i]] = true;
-          require(EVO.transfer(_recipient[i], 250 * decimalFactor));
-          airdropped = airdropped.add(250 * decimalFactor);
+          require(EVO.transfer(_recipient[i], 1000 * decimalFactor));
+          airdropped = airdropped.add(1000 * decimalFactor);
         }
     }
     AVAILABLE_AIRDROP_SUPPLY = AVAILABLE_AIRDROP_SUPPLY.sub(airdropped);
@@ -103,7 +103,6 @@ contract EvoDistribution is Ownable {
     */
   function transferTokens (address _recipient) public {
     require(allocations[_recipient].amountClaimed < allocations[_recipient].totalAllocated);
-    //require(now >= allocations[_recipient].endCliff);
     require(now >= startTime);
     uint256 newAmountClaimed;
     uint256 tokensToTransfer = newAmountClaimed.sub(allocations[_recipient].amountClaimed);

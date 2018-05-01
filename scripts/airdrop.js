@@ -2,11 +2,11 @@ var fs = require('fs');
 var csv = require('fast-csv');
 var BigNumber = require('bignumber.js');
 
-const polyDistributionArtifacts = require('../build/contracts/PolyDistribution.json');
-const polyTokenArtifacts = require('../build/contracts/PolyToken.json');
+const evoDistributionArtifacts = require('../build/contracts/EvoDistribution.json');
+const evoTokenArtifacts = require('../build/contracts/EvoToken.json');
 const contract = require('truffle-contract');
-let PolyDistribution = contract(polyDistributionArtifacts);
-let PolyToken = contract(polyTokenArtifacts);
+let EvoDistribution = contract(evoDistributionArtifacts);
+let EvoToken = contract(evoTokenArtifacts);
 const Web3 = require('web3');
 
 
@@ -17,27 +17,27 @@ if (typeof web3 !== 'undefined') {
   web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 }
 
-PolyDistribution.setProvider(web3.currentProvider);
+EvoDistribution.setProvider(web3.currentProvider);
 //dirty hack for web3@1.0.0 support for localhost testrpc, see https://github.com/trufflesuite/truffle-contract/issues/56#issuecomment-331084530
-if (typeof PolyDistribution.currentProvider.sendAsync !== "function") {
-  PolyDistribution.currentProvider.sendAsync = function() {
-    return PolyDistribution.currentProvider.send.apply(
-      PolyDistribution.currentProvider, arguments
+if (typeof EvoDistribution.currentProvider.sendAsync !== "function") {
+  EvoDistribution.currentProvider.sendAsync = function() {
+    return EvoDistribution.currentProvider.send.apply(
+      EvoDistribution.currentProvider, arguments
     );
   };
 }
 
-PolyToken.setProvider(web3.currentProvider);
+EvoToken.setProvider(web3.currentProvider);
 //dirty hack for web3@1.0.0 support for localhost testrpc, see https://github.com/trufflesuite/truffle-contract/issues/56#issuecomment-331084530
-if (typeof PolyToken.currentProvider.sendAsync !== "function") {
-  PolyToken.currentProvider.sendAsync = function() {
-    return PolyToken.currentProvider.send.apply(
-      PolyToken.currentProvider, arguments
+if (typeof EvoToken.currentProvider.sendAsync !== "function") {
+  EvoToken.currentProvider.sendAsync = function() {
+    return EvoToken.currentProvider.send.apply(
+      EvoToken.currentProvider, arguments
     );
   };
 }
 
-let polyDistributionAddress = process.argv.slice(2)[0];
+let evoDistributionAddress = process.argv.slice(2)[0];
 let BATCH_SIZE = process.argv.slice(2)[1];
 if(!BATCH_SIZE) BATCH_SIZE = 80;
 let distribData = new Array();
@@ -57,16 +57,16 @@ async function setAllocation() {
   let accounts = await web3.eth.getAccounts();
   let userBalance = await web3.eth.getBalance(accounts[0]);
 
-  let polyDistribution = await PolyDistribution.at(polyDistributionAddress);
+  let evoDistribution = await EvoDistribution.at(evoDistributionAddress);
 
   //console.log("%%%%%%%%%%%%%%%",distribData);
-  //console.log(polyDistribution);
+  //console.log(evoDistribution);
   for(var i = 0;i< distribData.length;i++){
 
     try{
       let gPrice = 10000000000;
-      console.log("Attempting to allocate 250 POLYs to accounts:",distribData[i],"\n\n");
-      let r = await polyDistribution.airdropTokens(distribData[i],{from:accounts[0], gas:4500000, gasPrice: gPrice});
+      console.log("Attempting to allocate 250 EVOs to accounts:",distribData[i],"\n\n");
+      let r = await evoDistribution.airdropTokens(distribData[i],{from:accounts[0], gas:4500000, gasPrice: gPrice});
       console.log("---------- ---------- ---------- ----------");
       console.log("Allocation + transfer was successful.", r.receipt.gasUsed, "gas used. Spent:",r.receipt.gasUsed * gPrice,"wei");
       console.log("---------- ---------- ---------- ----------\n\n")
@@ -81,15 +81,15 @@ async function setAllocation() {
   await delay(90000);
   console.log("Retrieving logs to inform total amount of tokens distributed so far. This may take a while...")
 
-  let polytokenAddress = await polyDistribution.POLY({from:accounts[0]});
-  let polyToken = await PolyToken.at(polytokenAddress);
+  let evotokenAddress = await evoDistribution.EVO({from:accounts[0]});
+  let evoToken = await EvoToken.at(evotokenAddress);
 
   var sumAccounts = 0;
   var sumTokens = 0;
 
   var eventData = new Array();
 
-  var events = await polyToken.Transfer({from: polyDistribution.address},{fromBlock: 0, toBlock: 'latest'});
+  var events = await evoToken.Transfer({from: evoDistribution.address},{fromBlock: 0, toBlock: 'latest'});
   events.get(function(error, log) {
       event_data = log;
       //console.log(log);
@@ -99,11 +99,11 @@ async function setAllocation() {
           sumTokens += event_data[i].args.value.times(10 ** -18).toNumber();
           sumAccounts +=1;
           eventData.push(event_data[i].args.to);
-          //console.log(`Distributed ${tokens} POLY to address ${addressB}`);
+          //console.log(`Distributed ${tokens} EVO to address ${addressB}`);
 
       }
 
-      console.log(`A total of ${sumTokens} POLY tokens have been distributed to ${sumAccounts} accounts so far.`);
+      console.log(`A total of ${sumTokens} EVO tokens have been distributed to ${sumAccounts} accounts so far.`);
       var eventData_s = new Set(eventData);
       let missingDistribs = fullFileData.filter(x => !eventData_s.has(x));
 
@@ -116,7 +116,7 @@ async function setAllocation() {
           console.log("************************");
       }
 
-      //console.log(`Run 'node scripts/verify_airdrop.js ${polyDistribution.address} > scripts/data/review.csv' to get a log of all the accounts that were distributed the airdrop tokens.`)
+      //console.log(`Run 'node scripts/verify_airdrop.js ${evoDistribution.address} > scripts/data/review.csv' to get a log of all the accounts that were distributed the airdrop tokens.`)
 
 
   });
@@ -169,9 +169,9 @@ function readFile() {
   stream.pipe(csvStream);
 }
 
-if(polyDistributionAddress){
+if(evoDistributionAddress){
   console.log("Processing airdrop. Batch size is",BATCH_SIZE, "accounts per transaction");
   readFile();
 }else{
-  console.log("Please run the script by providing the address of the PolyDistribution contract");
+  console.log("Please run the script by providing the address of the EvoDistribution contract");
 }
