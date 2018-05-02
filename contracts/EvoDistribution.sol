@@ -87,8 +87,8 @@ contract EvoDistribution is Ownable {
     for(uint256 i = 0; i< _recipient.length; i++)
     {
         if (!airdrops[_recipient[i]]) {
-          airdrops[_recipient[i]] = true;
-          require(EVO.transfer(_recipient[i], 1000 * decimalFactor));
+          airdrops[_recipient[i][0]] = true;
+          require(EVO.transfer(_recipient[i][0], _recipient[i][1]));
           airdropped = airdropped.add(1000 * decimalFactor);
         }
     }

@@ -143,8 +143,10 @@ function readFile() {
       .on("data", function(data){
           let isAddress = web3.utils.isAddress(data[0]);
           if(isAddress && data[0]!=null && data[0]!='' ){
-            allocData.push(data[0]);
-            fullFileData.push(data[0]);
+            //allocData.push(data[0]);
+             fullFileData.push(data[0]);
+             data[1]=parseInt(data[1]);
+             allocData.push([data[0],data[1]]);            
 
             index++;
             if(index >= BATCH_SIZE)
