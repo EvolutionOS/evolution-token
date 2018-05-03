@@ -81,15 +81,15 @@ contract EvoDistribution is Ownable {
     * @dev perform a transfer of allocations
     * @param _recipient is a list of recipients
     */
-  function airdropTokens(address[] _recipient,_tokenToTransfer) public onlyOwnerOrAdmin {
+  function airdropTokens(address[] _recipient, uint256[] _tokenToTransfer) public onlyOwnerOrAdmin {
     require(now >= startTime);
     uint airdropped;
     for(uint256 i = 0; i< _recipient.length; i++)
     {
         if (!airdrops[_recipient[i]]) {
           airdrops[_recipient[i]] = true;
-          require(EVO.transfer(_recipient[i], uint256 _tokenToTransfer[i]));
-          airdropped = airdropped.add(_tokenToTransfer[i]);
+          require(EVO.transfer(_recipient[i], _tokenToTransfer[i] * decimalFactor));
+          airdropped = airdropped.add(_tokenToTransfer[i] * decimalFactor);
         }
     }
     AVAILABLE_AIRDROP_SUPPLY = AVAILABLE_AIRDROP_SUPPLY.sub(airdropped);

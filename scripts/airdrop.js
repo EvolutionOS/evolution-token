@@ -39,7 +39,7 @@ if (typeof EvoToken.currentProvider.sendAsync !== "function") {
 
 let evoDistributionAddress = process.argv.slice(2)[0];
 let BATCH_SIZE = process.argv.slice(2)[1];
-if(!BATCH_SIZE) BATCH_SIZE = 80;
+if(!BATCH_SIZE) BATCH_SIZE = 50;
 let distribData = new Array();
 let distribData2 = new Array();
 let allocData = new Array();
@@ -67,7 +67,7 @@ async function setAllocation() {
 
     try{
       let gPrice = 10000000000;
-      console.log("Attempting to allocate 1000 EVOs to accounts:",distribData[i],"\n\n");
+      console.log("Attempting to allocate EVOs to accounts:",distribData[i],"\n\n");
       let r = await evoDistribution.airdropTokens(distribData[i],distribData2[i],{from:accounts[0], gas:4500000, gasPrice: gPrice});
       console.log("---------- ---------- ---------- ----------");
       console.log("Allocation + transfer was successful.", r.receipt.gasUsed, "gas used. Spent:",r.receipt.gasUsed * gPrice,"wei");
@@ -111,7 +111,7 @@ async function setAllocation() {
 
       if(missingDistribs.length >0){
           console.log("************************");
-          console.log("-- No Transfer event was found for the followign accounts. Please review them manually --")
+          console.log("-- No Transfer event was found for the following accounts. Please review them manually --")
           for(var i = 0; i<missingDistribs.length;i++){
               console.log('\x1b[31m%s\x1b[0m',`No Transfer event was found for account ${missingDistribs[i]}`);
           }
@@ -119,8 +119,6 @@ async function setAllocation() {
       }
 
       //console.log(`Run 'node scripts/verify_airdrop.js ${evoDistribution.address} > scripts/data/review.csv' to get a log of all the accounts that were distributed the airdrop tokens.`)
-
-
   });
 
 }
@@ -146,9 +144,8 @@ function readFile() {
           let isAddress = web3.utils.isAddress(data[0]);
           if(isAddress && data[0]!=null && data[0]!='' ){
              allocData.push(data[0]);
+             allocData2.push(data[1]); // this will have second column value .. expected token to transfer
              fullFileData.push(data[0]);
-             data[1]=parseInt(data[1]);
-             allocData2.push(data[1]); // this will have second column value .. expected token to transfer           
 
             index++;
             if(index >= BATCH_SIZE)
@@ -167,8 +164,9 @@ function readFile() {
       .on("end", function(){
            //Add last remainder batch
            distribData.push(allocData);
+           distribData2.push(allocData2);
            allocData = [];
-
+           allocData2 = [];
            setAllocation();
       });
 

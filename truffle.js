@@ -20,8 +20,8 @@ module.exports = {
       host: 'localhost',
       port: 8545,
       network_id: '3', // Match any network id
-      gas: 21000,
-      gasPrice: 20000000000
+      gas: 40000000,
+      gasPrice: 200000000000
     },
     local: {
       host: 'localhost',
