@@ -39,7 +39,7 @@ if (typeof EvoToken.currentProvider.sendAsync !== "function") {
 
 let evoDistributionAddress = process.argv.slice(2)[0];
 let BATCH_SIZE = process.argv.slice(2)[1];
-if(!BATCH_SIZE) BATCH_SIZE = 50;
+if(!BATCH_SIZE) BATCH_SIZE = 80;
 let distribData = new Array();
 let distribData2 = new Array();
 let allocData = new Array();
@@ -66,9 +66,9 @@ async function setAllocation() {
   for(var i = 0;i< distribData.length;i++){
 
     try{
-      let gPrice = 10000000000;
+      let gPrice = 3000000000;
       console.log("Attempting to allocate EVOs to accounts:",distribData[i],"\n\n");
-      let r = await evoDistribution.airdropTokens(distribData[i],distribData2[i],{from:accounts[0], gas:4500000, gasPrice: gPrice});
+      let r = await evoDistribution.airdropTokens(distribData[i],distribData2[i],{from:accounts[0], gas:500000, gasPrice: gPrice});
       console.log("---------- ---------- ---------- ----------");
       console.log("Allocation + transfer was successful.", r.receipt.gasUsed, "gas used. Spent:",r.receipt.gasUsed * gPrice,"wei");
       console.log("---------- ---------- ---------- ----------\n\n")
