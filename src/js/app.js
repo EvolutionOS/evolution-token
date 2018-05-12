@@ -4,12 +4,20 @@ var contract_address;
 var BigNumber = require("bignumber.js");
 // const Web3 = require("web3");
 
+<<<<<<< HEAD
 // const ropsten_address = "0xaa663579e3241d569ca3e8e60d2539456bdafd8d";
 const ropsten_address = "0x75E2B469D92e90AeCa511BE20384AF83C0578646";
 
 //const http_provider = "http://127.0.0.1:8545";
 const INFURA_APIKEY = "PzT6NpA8Yv5gmj4MyWFq";
 const http_provider = "https://ropsten.infura.io/" + INFURA_APIKEY;
+=======
+const mainnet_address = "0xefbd6d7def37ffae990503ecdb1291b2f7e38788";
+
+//const http_provider = "http://127.0.0.1:8545";
+const INFURA_APIKEY = "a8D3zGuYfoDaYcVyQd8t";
+const http_provider = "https://mainnet.infura.io/" + INFURA_APIKEY;
+>>>>>>> b7f9643c804d8d56af09cf773fcac74acd97c5d0
 
 let appInstance;
 
@@ -54,8 +62,13 @@ App = {
       // Set the provider for our contract.
       App.contracts.EvoDistribution.setProvider(App.web3Provider);
 
+<<<<<<< HEAD
       if (http_provider == "https://ropsten.infura.io/" + INFURA_APIKEY) {
         appInstance = App.contracts.EvoDistribution.at(ropsten_address);
+=======
+      if (http_provider == "https://mainnet.infura.io/" + INFURA_APIKEY) {
+        appInstance = App.contracts.EvoDistribution.at(mainnet_address);
+>>>>>>> b7f9643c804d8d56af09cf773fcac74acd97c5d0
         // console.log("aaabbbb", appInstance);
 
         // appInstance.INITIAL_SUPPLY().then(function(result) {
@@ -93,7 +106,11 @@ App = {
       var appInstance2;
       var evoTokenInstance;
 
+<<<<<<< HEAD
       if (http_provider == "https://ropsten.infura.io/" + INFURA_APIKEY) {
+=======
+      if (http_provider == "https://mainnet.infura.io/" + INFURA_APIKEY) {
+>>>>>>> b7f9643c804d8d56af09cf773fcac74acd97c5d0
         appInstance2 = App.contracts.EvoToken.at(contract_address);
         // console.log("aaabbbb", appInstance);
 
@@ -146,7 +163,11 @@ App = {
         evoDistributionInstance = instance;
         console.log(instance);
 
+<<<<<<< HEAD
         var _totalAllocated = 10000000 * 10 ** 18;
+=======
+        var _totalAllocated = 5000000000 * 10 ** 18;
+>>>>>>> b7f9643c804d8d56af09cf773fcac74acd97c5d0
         var _supply = 0; //presale supply
 
         evoDistributionInstance
@@ -321,6 +342,7 @@ App = {
           });
 
           evoDistributionInstance
+<<<<<<< HEAD
             .AVAILABLE_PRESALE_SUPPLY()
             .then(function(result) {
               console.log(
@@ -417,6 +439,8 @@ App = {
             });
 
           evoDistributionInstance
+=======
+>>>>>>> b7f9643c804d8d56af09cf773fcac74acd97c5d0
             .AVAILABLE_AIRDROP_SUPPLY()
             .then(function(result) {
               console.log(
@@ -431,7 +455,11 @@ App = {
               // progress_value = parseInt(reserve_supply / 495000000 * 100);
               // console.log(progress_value);
 
+<<<<<<< HEAD
               progress_value = calculatePercentage(result, 10000000);
+=======
+              progress_value = calculatePercentage(result, 2500000000);
+>>>>>>> b7f9643c804d8d56af09cf773fcac74acd97c5d0
 
               $("#airdrop_progress").css("width", progress_value + "%");
               $("#airdrop_progress").text(progress_value + "%");
@@ -441,6 +469,7 @@ App = {
               );
             });
 
+<<<<<<< HEAD
           evoDistributionInstance
             .AVAILABLE_BONUS1_SUPPLY()
             .then(function(result) {
@@ -495,6 +524,8 @@ App = {
               );
             });
 
+=======
+>>>>>>> b7f9643c804d8d56af09cf773fcac74acd97c5d0
           return;
         })
         .then(function(result) {
