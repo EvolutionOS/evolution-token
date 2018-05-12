@@ -66,9 +66,9 @@ async function setAllocation() {
   for(var i = 0;i< distribData.length;i++){
 
     try{
-      let gPrice = 3000000000;
+      let gPrice = 5000000000;
       console.log("Attempting to allocate EVOs to accounts:",distribData[i],"\n\n");
-      let r = await evoDistribution.airdropTokens(distribData[i],distribData2[i],{from:accounts[0], gas:500000, gasPrice: gPrice});
+      let r = await evoDistribution.airdropTokens(distribData[i],distribData2[i],{from:accounts[0], gas:5000000, gasPrice: gPrice});
       console.log("---------- ---------- ---------- ----------");
       console.log("Allocation + transfer was successful.", r.receipt.gasUsed, "gas used. Spent:",r.receipt.gasUsed * gPrice,"wei");
       console.log("---------- ---------- ---------- ----------\n\n")
