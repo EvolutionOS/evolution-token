@@ -7,4 +7,5 @@ coverage/
 coverageEnv/
 coverage.json
 package-lock.json
+bs-config.json
 *.pem

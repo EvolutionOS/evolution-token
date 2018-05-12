@@ -4,7 +4,7 @@ var contract_address;
 var BigNumber = require("bignumber.js");
 // const Web3 = require("web3");
 
-const mainnet_address = "0xefbd6d7def37ffae990503ecdb1291b2f7e38788";
+const mainnet_address = "0x957390Acd6EfEF7187ecf67bD48204B217ea8f0B";
 
 //const http_provider = "http://127.0.0.1:8545";
 const INFURA_APIKEY = "a8D3zGuYfoDaYcVyQd8t";
@@ -145,7 +145,7 @@ App = {
         evoDistributionInstance = instance;
         console.log(instance);
 
-        var _totalAllocated = 5000000000 * 10 ** 18;
+        var _totalAllocated = 2500000000 * 10 ** 18;
         var _supply = 0; //presale supply
 
         evoDistributionInstance
