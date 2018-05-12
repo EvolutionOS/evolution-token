@@ -4,20 +4,11 @@ var contract_address;
 var BigNumber = require("bignumber.js");
 // const Web3 = require("web3");
 
-<<<<<<< HEAD
-// const ropsten_address = "0xaa663579e3241d569ca3e8e60d2539456bdafd8d";
-const ropsten_address = "0x75E2B469D92e90AeCa511BE20384AF83C0578646";
-
-//const http_provider = "http://127.0.0.1:8545";
-const INFURA_APIKEY = "PzT6NpA8Yv5gmj4MyWFq";
-const http_provider = "https://ropsten.infura.io/" + INFURA_APIKEY;
-=======
 const mainnet_address = "0xefbd6d7def37ffae990503ecdb1291b2f7e38788";
 
 //const http_provider = "http://127.0.0.1:8545";
 const INFURA_APIKEY = "a8D3zGuYfoDaYcVyQd8t";
 const http_provider = "https://mainnet.infura.io/" + INFURA_APIKEY;
->>>>>>> b7f9643c804d8d56af09cf773fcac74acd97c5d0
 
 let appInstance;
 
@@ -62,13 +53,8 @@ App = {
       // Set the provider for our contract.
       App.contracts.EvoDistribution.setProvider(App.web3Provider);
 
-<<<<<<< HEAD
-      if (http_provider == "https://ropsten.infura.io/" + INFURA_APIKEY) {
-        appInstance = App.contracts.EvoDistribution.at(ropsten_address);
-=======
       if (http_provider == "https://mainnet.infura.io/" + INFURA_APIKEY) {
         appInstance = App.contracts.EvoDistribution.at(mainnet_address);
->>>>>>> b7f9643c804d8d56af09cf773fcac74acd97c5d0
         // console.log("aaabbbb", appInstance);
 
         // appInstance.INITIAL_SUPPLY().then(function(result) {
@@ -106,11 +92,7 @@ App = {
       var appInstance2;
       var evoTokenInstance;
 
-<<<<<<< HEAD
-      if (http_provider == "https://ropsten.infura.io/" + INFURA_APIKEY) {
-=======
       if (http_provider == "https://mainnet.infura.io/" + INFURA_APIKEY) {
->>>>>>> b7f9643c804d8d56af09cf773fcac74acd97c5d0
         appInstance2 = App.contracts.EvoToken.at(contract_address);
         // console.log("aaabbbb", appInstance);
 
@@ -163,11 +145,7 @@ App = {
         evoDistributionInstance = instance;
         console.log(instance);
 
-<<<<<<< HEAD
-        var _totalAllocated = 10000000 * 10 ** 18;
-=======
         var _totalAllocated = 5000000000 * 10 ** 18;
->>>>>>> b7f9643c804d8d56af09cf773fcac74acd97c5d0
         var _supply = 0; //presale supply
 
         evoDistributionInstance
@@ -342,105 +320,6 @@ App = {
           });
 
           evoDistributionInstance
-<<<<<<< HEAD
-            .AVAILABLE_PRESALE_SUPPLY()
-            .then(function(result) {
-              console.log(
-                "#PresaleSupply_Balance",
-                web3.fromWei(result, "ether").toString(10)
-              );
-
-              var presale_supply = web3.fromWei(result, "ether").toNumber();
-              console.log(presale_supply / 240000000);
-
-              progress_value = parseInt(presale_supply / 230000000 * 100);
-              console.log(progress_value);
-
-              $("#presale_progress").css("width", progress_value + "%");
-              $("#presale_progress").text(progress_value + "%");
-
-              $("#PresaleSupply_Balance").text(
-                web3.fromWei(result, "ether").toString(10)
-              );
-            });
-
-          evoDistributionInstance
-            .AVAILABLE_FOUNDER_SUPPLY()
-            .then(function(result) {
-              console.log(
-                "Founder_Balance",
-                web3.fromWei(result, "ether").toString(10)
-              );
-
-              // var reserve_supply = web3.fromWei(result, "ether").toNumber();
-              // console.log(reserve_supply);
-              // console.log(reserve_supply, 495000000);
-
-              // progress_value = parseInt(reserve_supply / 495000000 * 100);
-              // console.log(progress_value);
-
-              progress_value = calculatePercentage(result, 150000000);
-
-              $("#founder_progress").css("width", progress_value + "%");
-              $("#founder_progress").text(progress_value + "%");
-
-              $("#FounderSupply_Balance").text(
-                web3.fromWei(result, "ether").toString(10)
-              );
-            });
-
-          evoDistributionInstance
-            .AVAILABLE_RESERVE_SUPPLY()
-            .then(function(result) {
-              console.log(
-                "Reserve_Balance",
-                web3.fromWei(result, "ether").toString(10)
-              );
-              // var reserve_supply = web3.fromWei(result, "ether").toNumber();
-              // console.log(reserve_supply);
-              // console.log(reserve_supply, 495000000);
-
-              // progress_value = parseInt(reserve_supply / 495000000 * 100);
-              // console.log(progress_value);
-
-              progress_value = calculatePercentage(result, 513116658);
-
-              $("#reserve_progress").css("width", progress_value + "%");
-              $("#reserve_progress").text(progress_value + "%");
-
-              $("#ReserveSupply_Balance").text(
-                web3.fromWei(result, "ether").toString(10)
-              );
-            });
-
-          evoDistributionInstance
-            .AVAILABLE_ADVISOR_SUPPLY()
-            .then(function(result) {
-              console.log(
-                "#AdvisorSupply_Balance",
-                web3.fromWei(result, "ether").toString(10)
-              );
-
-              // var reserve_supply = web3.fromWei(result, "ether").toNumber();
-              // console.log(reserve_supply);
-              // console.log(reserve_supply, 495000000);
-
-              // progress_value = parseInt(reserve_supply / 495000000 * 100);
-              // console.log(progress_value);
-
-              progress_value = calculatePercentage(result, 20000000);
-
-              $("#advisor_progress").css("width", progress_value + "%");
-              $("#advisor_progress").text(progress_value + "%");
-
-              $("#AdvisorSupply_Balance").text(
-                web3.fromWei(result, "ether").toString(10)
-              );
-            });
-
-          evoDistributionInstance
-=======
->>>>>>> b7f9643c804d8d56af09cf773fcac74acd97c5d0
             .AVAILABLE_AIRDROP_SUPPLY()
             .then(function(result) {
               console.log(
@@ -455,11 +334,7 @@ App = {
               // progress_value = parseInt(reserve_supply / 495000000 * 100);
               // console.log(progress_value);
 
-<<<<<<< HEAD
-              progress_value = calculatePercentage(result, 10000000);
-=======
               progress_value = calculatePercentage(result, 2500000000);
->>>>>>> b7f9643c804d8d56af09cf773fcac74acd97c5d0
 
               $("#airdrop_progress").css("width", progress_value + "%");
               $("#airdrop_progress").text(progress_value + "%");
@@ -468,64 +343,6 @@ App = {
                 web3.fromWei(result, "ether").toString(10)
               );
             });
-
-<<<<<<< HEAD
-          evoDistributionInstance
-            .AVAILABLE_BONUS1_SUPPLY()
-            .then(function(result) {
-              console.log(
-                "#BONUS1_Balance",
-                web3.fromWei(result, "ether").toString(10)
-              );
-
-              progress_value = calculatePercentage(result, 39053330);
-
-              $("#bonus1_progress").css("width", progress_value + "%");
-              $("#bonus1_progress").text(progress_value + "%");
-
-              $("#Bonus1_Balance").text(
-                web3.fromWei(result, "ether").toString(10)
-              );
-            });
-
-          evoDistributionInstance
-            .AVAILABLE_BONUS2_SUPPLY()
-            .then(function(result) {
-              console.log(
-                "#BONUS2_Balance",
-                web3.fromWei(result, "ether").toString(10)
-              );
-
-              progress_value = calculatePercentage(result, 9354408);
-
-              $("#bonus2_progress").css("width", progress_value + "%");
-              $("#bonus2_progress").text(progress_value + "%");
-
-              $("#Bonus2_Balance").text(
-                web3.fromWei(result, "ether").toString(10)
-              );
-            });
-
-          evoDistributionInstance
-            .AVAILABLE_BONUS3_SUPPLY()
-            .then(function(result) {
-              console.log(
-                "#BONUS3_Balance",
-                web3.fromWei(result, "ether").toString(10)
-              );
-
-              progress_value = calculatePercentage(result, 28475604);
-
-              $("#bonus3_progress").css("width", progress_value + "%");
-              $("#bonus3_progress").text(progress_value + "%");
-
-              $("#Bonus3_Balance").text(
-                web3.fromWei(result, "ether").toString(10)
-              );
-            });
-
-=======
->>>>>>> b7f9643c804d8d56af09cf773fcac74acd97c5d0
           return;
         })
         .then(function(result) {
