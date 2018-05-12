@@ -6,4 +6,5 @@ config.ini
 coverage/
 coverageEnv/
 coverage.json
+package-lock.json
 *.pem
