@@ -1,6 +1,7 @@
 config.ini
 /node_modules
 /build
+/data
 *.DS_Store
 .npm-debug.log
 coverage/
