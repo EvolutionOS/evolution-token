@@ -48,90 +48,39 @@ let fullFileData = new Array();
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-async function setAllocation() {
-
+async function doTransfers() {
   console.log(`
     --------------------------------------------
-    ---------Performing allocations ------------
+    ---------Performing transfers ------------
     --------------------------------------------
   `);
 
   let accounts = await web3.eth.getAccounts();
   let userBalance = await web3.eth.getBalance(accounts[0]);
-
+  let evoToken = await EvoToken.at(evoDistributionAddress);
   let evoDistribution = await EvoDistribution.at(evoDistributionAddress);
 
-  //console.log("%%%%%%%%%%%%%%%",distribData);
-  //console.log(evoDistribution);
   for(var i = 0;i< distribData.length;i++){
-
     try{
-      let gPrice = 3000000000;
-      console.log("Attempting to allocate EVOs to accounts:",distribData[i],"\n\n");
-      let r = await evoDistribution.airdropTokens(distribData[i],distribData2[i],{from:accounts[0], gas:5000000, gasPrice: gPrice});
-      console.log("---------- ---------- ---------- ----------");
-      console.log("Allocation + transfer was successful.", r.receipt.gasUsed, "gas used. Spent:",r.receipt.gasUsed * gPrice,"wei");
-      console.log("---------- ---------- ---------- ----------\n\n")
+      let gPrice = 12000000000;
+      console.log("Attempting to transfer EVOs to accounts:",distribData[i],"\n\n");
+      let r = await evoToken.transfer(distribData[i],distribData2[i],{from:accounts[0], gas:5000000, gasPrice: gPrice});
     } catch (err){
       console.log("ERROR:",err);
     }
   }
 
-  console.log("Distribution script finished successfully.")
-  console.log("Waiting 2 minutes for transactions to be mined...")
-  await delay(90000);
-  console.log("Retrieving logs to inform total amount of tokens distributed so far. This may take a while...")
-
-  let evotokenAddress = await evoDistribution.EVO({from:accounts[0]});
-  let evoToken = await EvoToken.at(evotokenAddress);
-
-  var sumAccounts = 0;
-  var sumTokens = 0;
-
-  var eventData = new Array();
-
-  var events = await evoToken.Transfer({from: evoDistribution.address},{fromBlock: 0, toBlock: 'latest'});
-  events.get(function(error, log) {
-      event_data = log;
-      //console.log(log);
-      for (var i=0; i<event_data.length;i++){
-          //let tokens = event_data[i].args.value.times(10 ** -18).toString(10);
-          //let addressB = event_data[i].args.to;
-          sumTokens += event_data[i].args.value.times(10 ** -18).toNumber();
-          sumAccounts +=1;
-          eventData.push(event_data[i].args.to);
-          //console.log(`Distributed ${tokens} EVO to address ${addressB}`);
-
-      }
-
-      console.log(`A total of ${sumTokens} EVO tokens have been distributed to ${sumAccounts} accounts so far.`);
-      var eventData_s = new Set(eventData);
-      let missingDistribs = fullFileData.filter(x => !eventData_s.has(x));
-
-      if(missingDistribs.length >0){
-          console.log("************************");
-          console.log("-- No Transfer event was found for the following accounts. Please review them manually --")
-          for(var i = 0; i<missingDistribs.length;i++){
-              console.log('\x1b[31m%s\x1b[0m',`No Transfer event was found for account ${missingDistribs[i]}`);
-          }
-          console.log("************************");
-      }
-
-      //console.log(`Run 'node scripts/verify_airdrop.js ${evoDistribution.address} > scripts/data/review.csv' to get a log of all the accounts that were distributed the airdrop tokens.`)
-  });
-
 }
 
-
 function readFile() {
-  var stream = fs.createReadStream("data/airdrop.csv");
+  var stream = fs.createReadStream("data/transfers.csv");
 
   let index = 0;
   let batch = 0;
 
   console.log(`
     --------------------------------------------
-    --------- Parsing distrib.csv file ---------
+    --------- Parsing transfer.csv file ---------
     --------------------------------------------
     ******** Removing beneficiaries without tokens or address data
   `);
@@ -166,14 +115,14 @@ function readFile() {
            distribData2.push(allocData2);
            allocData = [];
            allocData2 = [];
-           setAllocation();
+           doTransfers();
       });
 
   stream.pipe(csvStream);
 }
 
 if(evoDistributionAddress){
-  console.log("Processing airdrop. Batch size is",BATCH_SIZE, "accounts per transaction");
+  console.log("Processing transfers.");
   readFile();
 }else{
   console.log("Please run the script by providing the address of the EvoDistribution contract");
