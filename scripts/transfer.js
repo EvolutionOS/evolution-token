@@ -14,7 +14,7 @@ if (typeof web3 !== 'undefined') {
   web3 = new Web3(web3.currentProvider);
 } else {
   // set the provider you want from Web3.providers
-  web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+  web3 = new Web3(new Web3.providers.HttpProvider("http://192.168.0.12:7545"));
 }
 
 EvoDistribution.setProvider(web3.currentProvider);
@@ -38,92 +38,38 @@ if (typeof EvoToken.currentProvider.sendAsync !== "function") {
 }
 
 let evoDistributionAddress = process.argv.slice(2)[0];
-let BATCH_SIZE = process.argv.slice(2)[1];
-if(!BATCH_SIZE) BATCH_SIZE = 80;
-let distribData = new Array();
-let distribData2 = new Array();
-let allocData = new Array();
-let allocData2 = new Array();
-let fullFileData = new Array();
 
-const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
-
-async function doTransfers() {
-  console.log(`
-    --------------------------------------------
-    ---------Performing transfers ------------
-    --------------------------------------------
-  `);
+async function setAllocation() {
+  console.log(`--------------------------------------------
+    ---------Performing allocations ------------
+    --------------------------------------------`);
 
   let accounts = await web3.eth.getAccounts();
-  let userBalance = await web3.eth.getBalance(accounts[0]);
-  let evoToken = await EvoToken.at(evoDistributionAddress);
+
   let evoDistribution = await EvoDistribution.at(evoDistributionAddress);
 
-  for(var i = 0;i< distribData.length;i++){
-    try{
-      let gPrice = 12000000000;
-      console.log("Attempting to transfer EVOs to accounts:",distribData[i],"\n\n");
-      let r = await evoToken.transfer(distribData[i],distribData2[i],{from:accounts[0], gas:5000000, gasPrice: gPrice});
-    } catch (err){
-      console.log("ERROR:",err);
-    }
+  let evotokenAddress = await evoDistribution.EVO({from:accounts[0]});
+  let evoToken = await EvoToken.at(evotokenAddress);
+
+  // Adrian (): Let's approve the transaction
+  /**let gPrice2 = 20000000000;
+  var appr = await evoToken.approve('0x9Ce5129b8BB7cD86288d292856cD04c3F453e7EC', 10, {from:'0x8616788B2329d800e49dF70d863A40D753f6d714', gas:6721975, gasPrice: gPrice2});
+  console.log(appr);
+
+  // Adrian (): Transfer from
+  var events = await evoToken.transferFrom('0x8616788B2329d800e49dF70d863A40D753f6d714', '0x7D2c42C4Bf9b24a46A280512a7Bd9a81e27191af', 50, {from:'0x9Ce5129b8BB7cD86288d292856cD04c3F453e7EC', gas:6721975, gasPrice: gPrice2});
+  console.log(events);**/
+
+  // Adrian (): Regular transfer
+  try{
+    let amountToSend = 50 * 1e18;
+    let gPrice2 = 20000000000;
+
+    var events = await evoToken.transfer('0x2b9936C587C022b6aEE49DD9785640E35f5E7abe', amountToSend, {from:accounts[0], gas:6721975, gasPrice: gPrice2});
+    console.log(events);
+  } catch (err){
+    console.log("ERROR: ", err);
   }
-
 }
 
-function readFile() {
-  var stream = fs.createReadStream("data/transfers.csv");
-
-  let index = 0;
-  let batch = 0;
-
-  console.log(`
-    --------------------------------------------
-    --------- Parsing transfer.csv file ---------
-    --------------------------------------------
-    ******** Removing beneficiaries without tokens or address data
-  `);
-
-  //console.log("QQQ",distribData);
-
-  var csvStream = csv()
-      .on("data", function(data){
-          let isAddress = web3.utils.isAddress(data[0]);
-          if(isAddress && data[0]!=null && data[0]!='' ){
-             allocData.push(data[0]);
-             allocData2.push(data[1]); // this will have second column value .. expected token to transfer
-             fullFileData.push(data[0]);
-
-            index++;
-            if(index >= BATCH_SIZE)
-            {
-              distribData.push(allocData);
-              distribData2.push(allocData2);
-            //  console.log("DIS",distribData);
-              allocData = [];
-              allocData2 = [];
-            //  console.log("ALLOC",allocData);
-              index = 0;
-            }
-
-          }
-      })
-      .on("end", function(){
-           //Add last remainder batch
-           distribData.push(allocData);
-           distribData2.push(allocData2);
-           allocData = [];
-           allocData2 = [];
-           doTransfers();
-      });
-
-  stream.pipe(csvStream);
-}
-
-if(evoDistributionAddress){
-  console.log("Processing transfers.");
-  readFile();
-}else{
-  console.log("Please run the script by providing the address of the EvoDistribution contract");
-}
+setAllocation();
